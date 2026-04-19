@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block title %}{{ t('error_404_title') }}{% endblock
+%} {% block content %}
+<section class="mx-auto grid w-full max-w-5xl gap-8">
+  <div
+    class="card relative overflow-hidden border border-slate-200 bg-white/80 p-10 shadow dark:border-slate-700 dark:bg-slate-900/80"
+  >
+    <div
+      class="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-amber-200/60 blur-3xl dark:bg-amber-500/20"
+    ></div>
+    <div
+      class="pointer-events-none absolute -right-16 -bottom-16 h-40 w-40 rounded-full bg-rose-200/60 blur-3xl dark:bg-rose-500/20"
+    ></div>
+    <p
+      class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-300"
+    >
+      404
+    </p>
+    <h1 class="mt-3 text-3xl font-semibold">{{ t('error_404_title') }}</h1>
+    <p class="mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
+      {{ t('error_404_subtitle') }}
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="{{ url_for('landing') }}" class="btn-primary"
+        >{{ t('error_404_home') }}</a
+      >
+      <a href="{{ url_for('auth.login') }}" class="btn-secondary"
+        >{{ t('error_404_action') }}</a
+      >
+    </div>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div class="card dark:border-slate-700 dark:bg-slate-900/80">
+      <p class="text-sm font-semibold">{{ t('error_404_tip_title') }}</p>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+        {{ t('error_404_tip_desc') }}
+      </p>
+    </div>
+    <div class="card dark:border-slate-700 dark:bg-slate-900/80">
+      <p class="text-sm font-semibold">{{ t('error_404_help_title') }}</p>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+        {{ t('error_404_help_desc') }}
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

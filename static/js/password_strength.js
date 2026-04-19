@@ -30,9 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
         meter.value = score;
       }
       if (label) {
-        let text = "Weak";
-        if (score >= 5) text = "Strong";
-        else if (score >= 3) text = "Medium";
+        const weakLabel = field.dataset.weakLabel || "Weak";
+        const mediumLabel = field.dataset.mediumLabel || "Medium";
+        const strongLabel = field.dataset.strongLabel || "Strong";
+        let text = weakLabel;
+        if (score >= 5) text = strongLabel;
+        else if (score >= 3) text = mediumLabel;
         label.textContent = text;
       }
     };

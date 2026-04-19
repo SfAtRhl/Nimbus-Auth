@@ -1,43 +1,50 @@
-{% extends "base.html" %} {% block title %}Nimbus Auth{% endblock %} {% block
-content %}
+{% extends "base.html" %} {% block title %}{{ t('site_name') }}{% endblock %} {%
+block content %}
 <section class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
   <div class="space-y-6">
     <p
-      class="inline-flex items-center rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 shadow"
+      class="inline-flex items-center rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 shadow dark:bg-slate-900/70 dark:text-slate-300"
     >
-      Secure by design
+      {{ t('hero_badge') }}
     </p>
     <h1 class="text-4xl font-semibold leading-tight sm:text-5xl">
-      Build login experiences your users actually trust.
+      {{ t('hero_title') }}
     </h1>
-    <p class="text-lg text-slate-600">
-      Nimbus pairs modern UX with hardened authentication flows, giving teams
-      everything they need to ship a secure product fast.
+    <p class="text-lg text-slate-600 dark:text-slate-300">
+      {{ t('hero_subtitle') }}
     </p>
     <div class="flex flex-wrap gap-3">
       <a href="{{ url_for('auth.register') }}" class="btn-primary"
-        >Create Account</a
+        >{{ t('hero_cta_primary') }}</a
       >
-      <a href="{{ url_for('auth.login') }}" class="btn-secondary">Sign in</a>
+      <a href="{{ url_for('auth.login') }}" class="btn-secondary"
+        >{{ t('hero_cta_secondary') }}</a
+      >
     </div>
     <div class="grid gap-4 sm:grid-cols-3">
       <div
-        class="rounded-2xl border border-white bg-white/70 p-4 text-sm shadow"
+        class="rounded-2xl border border-white bg-white/70 p-4 text-sm shadow dark:border-slate-700 dark:bg-slate-900/80"
       >
-        <p class="font-semibold">JWT Sessions</p>
-        <p class="text-slate-500">Secure, cookie-based authentication.</p>
+        <p class="font-semibold">{{ t('feature_jwt_title') }}</p>
+        <p class="text-slate-500 dark:text-slate-300">
+          {{ t('feature_jwt_desc') }}
+        </p>
       </div>
       <div
-        class="rounded-2xl border border-white bg-white/70 p-4 text-sm shadow"
+        class="rounded-2xl border border-white bg-white/70 p-4 text-sm shadow dark:border-slate-700 dark:bg-slate-900/80"
       >
-        <p class="font-semibold">Password Reset</p>
-        <p class="text-slate-500">SMTP-delivered recovery links.</p>
+        <p class="font-semibold">{{ t('feature_reset_title') }}</p>
+        <p class="text-slate-500 dark:text-slate-300">
+          {{ t('feature_reset_desc') }}
+        </p>
       </div>
       <div
-        class="rounded-2xl border border-white bg-white/70 p-4 text-sm shadow"
+        class="rounded-2xl border border-white bg-white/70 p-4 text-sm shadow dark:border-slate-700 dark:bg-slate-900/80"
       >
-        <p class="font-semibold">Rate Limiting</p>
-        <p class="text-slate-500">Defends against brute-force attempts.</p>
+        <p class="font-semibold">{{ t('feature_rate_title') }}</p>
+        <p class="text-slate-500 dark:text-slate-300">
+          {{ t('feature_rate_desc') }}
+        </p>
       </div>
     </div>
   </div>
@@ -45,14 +52,12 @@ content %}
     <div
       class="rounded-3xl bg-gradient-to-br from-ink via-slate-800 to-slate-900 p-6 text-white shadow"
     >
-      <p class="text-sm text-slate-300">Launch checklist</p>
-      <h2 class="mt-2 text-2xl font-semibold">
-        Everything you need to go live.
-      </h2>
+      <p class="text-sm text-slate-300">{{ t('checklist_label') }}</p>
+      <h2 class="mt-2 text-2xl font-semibold">{{ t('checklist_title') }}</h2>
       <ul class="mt-4 space-y-2 text-sm text-slate-200">
-        <li>Multi-step password strength validation</li>
-        <li>CSRF-protected forms on every flow</li>
-        <li>Instant reset links via SMTP</li>
+        <li>{{ t('checklist_item_1') }}</li>
+        <li>{{ t('checklist_item_2') }}</li>
+        <li>{{ t('checklist_item_3') }}</li>
       </ul>
       <div
         class="mt-6 flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em] text-slate-300"
@@ -63,84 +68,110 @@ content %}
       </div>
     </div>
     <div class="grid gap-4 sm:grid-cols-2">
-      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow">
-        <p class="text-sm font-semibold">99.9% uptime</p>
-        <p class="text-sm text-slate-500">Built for reliable auth flows.</p>
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-4 shadow dark:border-slate-700 dark:bg-slate-900/80"
+      >
+        <p class="text-sm font-semibold">{{ t('stat_uptime_title') }}</p>
+        <p class="text-sm text-slate-500 dark:text-slate-300">
+          {{ t('stat_uptime_desc') }}
+        </p>
       </div>
-      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow">
-        <p class="text-sm font-semibold">SOC-ready</p>
-        <p class="text-sm text-slate-500">Audit-ready security posture.</p>
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-4 shadow dark:border-slate-700 dark:bg-slate-900/80"
+      >
+        <p class="text-sm font-semibold">{{ t('stat_soc_title') }}</p>
+        <p class="text-sm text-slate-500 dark:text-slate-300">
+          {{ t('stat_soc_desc') }}
+        </p>
       </div>
     </div>
   </div>
 </section>
 
 <section class="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-  <div class="card">
-    <h3 class="text-lg font-semibold">Frictionless onboarding</h3>
-    <p class="mt-2 text-sm text-slate-600">
-      Smart forms, inline validation, and fast JWT sessions keep users moving.
+  <div class="card dark:border-slate-700 dark:bg-slate-900/80">
+    <h3 class="text-lg font-semibold">{{ t('benefit_1_title') }}</h3>
+    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+      {{ t('benefit_1_desc') }}
     </p>
   </div>
-  <div class="card">
-    <h3 class="text-lg font-semibold">Insightful security</h3>
-    <p class="mt-2 text-sm text-slate-600">
-      Rate limits and detailed logs keep you aware of every sign-in.
+  <div class="card dark:border-slate-700 dark:bg-slate-900/80">
+    <h3 class="text-lg font-semibold">{{ t('benefit_2_title') }}</h3>
+    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+      {{ t('benefit_2_desc') }}
     </p>
   </div>
-  <div class="card">
-    <h3 class="text-lg font-semibold">Team-ready design</h3>
-    <p class="mt-2 text-sm text-slate-600">
-      SaaS-inspired layouts with responsive, bold typography.
+  <div class="card dark:border-slate-700 dark:bg-slate-900/80">
+    <h3 class="text-lg font-semibold">{{ t('benefit_3_title') }}</h3>
+    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+      {{ t('benefit_3_desc') }}
     </p>
   </div>
 </section>
 
 <section class="mt-20 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-  <div class="card space-y-4">
-    <h3 class="text-lg font-semibold">Plans that scale</h3>
-    <p class="text-sm text-slate-600">
-      Transparent pricing to grow with your business.
+  <div class="card space-y-4 dark:border-slate-700 dark:bg-slate-900/80">
+    <h3 class="text-lg font-semibold">{{ t('pricing_title') }}</h3>
+    <p class="text-sm text-slate-600 dark:text-slate-300">
+      {{ t('pricing_desc') }}
     </p>
-    <div class="rounded-2xl border border-slate-200 bg-white p-4">
-      <p class="text-sm font-semibold">Starter</p>
+    <div
+      class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+    >
+      <p class="text-sm font-semibold">{{ t('pricing_starter') }}</p>
       <p class="text-3xl font-semibold">$0</p>
-      <p class="text-sm text-slate-500">Perfect for prototypes.</p>
+      <p class="text-sm text-slate-500 dark:text-slate-300">
+        {{ t('pricing_starter_desc') }}
+      </p>
     </div>
-    <div class="rounded-2xl border border-slate-200 bg-white p-4">
-      <p class="text-sm font-semibold">Growth</p>
+    <div
+      class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+    >
+      <p class="text-sm font-semibold">{{ t('pricing_growth') }}</p>
       <p class="text-3xl font-semibold">$29</p>
-      <p class="text-sm text-slate-500">Advanced monitoring included.</p>
+      <p class="text-sm text-slate-500 dark:text-slate-300">
+        {{ t('pricing_growth_desc') }}
+      </p>
     </div>
   </div>
-  <div class="card">
+  <div class="card dark:border-slate-700 dark:bg-slate-900/80">
     <div class="flex items-start justify-between">
       <div>
-        <h3 class="text-lg font-semibold">Teams love Nimbus</h3>
-        <p class="mt-2 text-sm text-slate-600">
-          Trusted by security-minded product teams.
+        <h3 class="text-lg font-semibold">{{ t('testimonials_title') }}</h3>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          {{ t('testimonials_desc') }}
         </p>
       </div>
       <span
-        class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
+        class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200"
       >
-        4.9 rating
+        {{ t('rating_label') }}
       </span>
     </div>
     <div class="mt-6 space-y-4">
-      <div class="rounded-2xl border border-slate-200 bg-white p-4">
-        <p class="text-sm text-slate-600">
-          “We shipped auth in a weekend and it looks premium.”
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+      >
+        <p class="text-sm text-slate-600 dark:text-slate-300">
+          “{{ t('testimonial_1') }}”
         </p>
-        <p class="mt-2 text-xs font-semibold text-slate-500">
-          Ari, Product Lead
+        <p
+          class="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400"
+        >
+          {{ t('testimonial_1_author') }}
         </p>
       </div>
-      <div class="rounded-2xl border border-slate-200 bg-white p-4">
-        <p class="text-sm text-slate-600">
-          “Reset flows and rate limits came ready to go.”
+      <div
+        class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+      >
+        <p class="text-sm text-slate-600 dark:text-slate-300">
+          “{{ t('testimonial_2') }}”
         </p>
-        <p class="mt-2 text-xs font-semibold text-slate-500">Jamie, Security</p>
+        <p
+          class="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400"
+        >
+          {{ t('testimonial_2_author') }}
+        </p>
       </div>
     </div>
   </div>
@@ -153,26 +184,26 @@ content %}
     class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
   >
     <div>
-      <h3 class="text-2xl font-semibold">Ready to protect your users?</h3>
-      <p class="text-sm text-slate-300">
-        Launch the full authentication suite in minutes.
-      </p>
+      <h3 class="text-2xl font-semibold">{{ t('cta_title') }}</h3>
+      <p class="text-sm text-slate-300">{{ t('cta_subtitle') }}</p>
     </div>
     <a href="{{ url_for('auth.register') }}" class="btn-secondary"
-      >Get started</a
+      >{{ t('cta_button') }}</a
     >
   </div>
 </section>
 
-<footer class="mt-16 border-t border-slate-200 pt-6 text-sm text-slate-500">
+<footer
+  class="mt-16 border-t border-slate-200 pt-6 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400"
+>
   <div
     class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
   >
-    <p>Designed for modern teams. © 2026 Nimbus.</p>
+    <p>{{ t('footer_tagline') }}</p>
     <div class="flex gap-4">
-      <a href="#" class="hover:text-ink">Privacy</a>
-      <a href="#" class="hover:text-ink">Security</a>
-      <a href="#" class="hover:text-ink">Contact</a>
+      <a href="#" class="hover:text-ink">{{ t('footer_privacy') }}</a>
+      <a href="#" class="hover:text-ink">{{ t('footer_security') }}</a>
+      <a href="#" class="hover:text-ink">{{ t('footer_contact') }}</a>
     </div>
   </div>
 </footer>
