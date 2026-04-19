@@ -6,22 +6,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const themeToggle = document.querySelector("[data-theme-toggle]");
+  const toggleThemeIcons = () => {
+    if (!themeToggle) return;
+    const showSun = root.classList.contains("dark");
+    const moonIcon = themeToggle.querySelector(".theme-icon-moon");
+    const sunIcon = themeToggle.querySelector(".theme-icon-sun");
+    if (moonIcon) {
+      moonIcon.classList.toggle("hidden", showSun);
+    }
+    if (sunIcon) {
+      sunIcon.classList.toggle("hidden", !showSun);
+    }
+  };
   const updateThemeLabel = () => {
     if (!themeToggle) return;
     const darkLabel = themeToggle.getAttribute("data-dark-label") || "Dark";
     const lightLabel = themeToggle.getAttribute("data-light-label") || "Light";
-    themeToggle.textContent = root.classList.contains("dark")
-      ? lightLabel
-      : darkLabel;
+    const label = root.classList.contains("dark") ? lightLabel : darkLabel;
+    themeToggle.setAttribute("aria-label", label);
   };
 
   if (themeToggle) {
     updateThemeLabel();
+    toggleThemeIcons();
     themeToggle.addEventListener("click", () => {
       root.classList.toggle("dark");
       const nextTheme = root.classList.contains("dark") ? "dark" : "light";
       localStorage.setItem("theme", nextTheme);
       updateThemeLabel();
+      toggleThemeIcons();
     });
   }
 
