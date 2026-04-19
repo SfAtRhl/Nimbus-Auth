@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from flask import Flask, g, render_template
 from auth import auth_bp
 from api import api_bp
@@ -7,6 +8,7 @@ from models import close_db, init_db
 from utils import get_user_from_request, set_security_headers
 
 def create_app():
+    load_dotenv()
     app = Flask(__name__)
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret"),

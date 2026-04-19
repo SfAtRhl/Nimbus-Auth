@@ -121,20 +121,63 @@ def send_reset_email(to_email, reset_url):
     msg["Subject"] = "Reset your password"
     msg["From"] = current_app.config["SMTP_FROM"]
     msg["To"] = to_email
-    msg.set_content(
-        f"Hello,\n\nUse the link below to reset your password:\n{reset_url}\n\nIf you did not request this, you can ignore this email."
+    text_body = (
+        "Hello,\n\n"
+        "We received a request to reset your password.\n"
+        f"Use the link below to reset your password:\n{reset_url}\n\n"
+        "This link expires in 2 hours. If you did not request this, you can ignore this email."
     )
-
+    html_body = f"""
+    <div style="background-color:#f8fafc;padding:32px;font-family:Arial,Helvetica,sans-serif;">
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;margin:0 auto;background-color:#ffffff;border-radius:20px;border:1px solid #e2e8f0;overflow:hidden;">
+        <tr>
+          <td style="padding:28px 32px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#ffffff;">
+            <h1 style="margin:0;font-size:20px;letter-spacing:0.08em;text-transform:uppercase;">Nimbus Security</h1>
+            <p style="margin:8px 0 0;font-size:14px;color:#e2e8f0;">Password reset request</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 32px;color:#0f172a;">
+            <h2 style="margin:0 0 12px;font-size:22px;">Reset your password</h2>
+            <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#475569;">
+              We received a request to reset your password. Click the button below to set a new one.
+              This link expires in 2 hours.
+            </p>
+            <a href="{reset_url}" style="display:inline-block;padding:12px 20px;background-color:#0f172a;color:#ffffff;text-decoration:none;border-radius:999px;font-size:14px;font-weight:600;">Reset password</a>
+            <p style="margin:20px 0 0;font-size:12px;line-height:1.6;color:#94a3b8;">
+              If the button does not work, copy and paste this link into your browser:<br />
+              <span style="color:#0f172a;">{reset_url}</span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 32px;background-color:#f1f5f9;color:#64748b;font-size:12px;">
+            If you did not request this password reset, you can safely ignore this email.
+          </td>
+        </tr>
+      </table>
+    </div>
+    """
+    msg.set_content(text_body)
+    msg.add_alternative(html_body, subtype="html")
     host = current_app.config["SMTP_HOST"]
     port = current_app.config["SMTP_PORT"]
     username = current_app.config["SMTP_USERNAME"]
     password = current_app.config["SMTP_PASSWORD"]
     use_tls = current_app.config["SMTP_USE_TLS"]
 
-    with smtplib.SMTP(host, port) as server:
-        server.ehlo()
-        if use_tls:
-            server.starttls()
-        if username:
-            server.login(username, password)
-        server.send_message(msg)
+    if not host:
+        current_app.logger.warning("SMTP_HOST not configured; skipping reset email.")
+        return
+
+    try:
+        with smtplib.SMTP(host, port, timeout=10) as server:
+            server.ehlo()
+            if use_tls:
+                server.starttls()
+                server.ehlo()
+            if username:
+                server.login(username, password)
+            server.send_message(msg)
+    except (smtplib.SMTPException, OSError) as exc:
+        current_app.logger.error("Failed to send reset email: %s", exc)
