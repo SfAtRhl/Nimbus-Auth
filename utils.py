@@ -64,8 +64,14 @@ def create_jwt(user, remember=False):
 def decode_jwt(token):
     return jwt.decode(token, current_app.config["JWT_SECRET"], algorithms=[current_app.config["JWT_ALG"]])
 
+def get_token_from_request():
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.lower().startswith("bearer "):
+        return auth_header.split(" ", 1)[1].strip()
+    return request.cookies.get("auth_token")
+
 def get_user_from_request():
-    token = request.cookies.get("auth_token")
+    token = get_token_from_request()
     if not token:
         return None
     try:
@@ -75,13 +81,31 @@ def get_user_from_request():
     user_id = payload.get("sub")
     if not user_id:
         return None
-    return get_user_by_id(user_id)
+    user = get_user_by_id(user_id)
+    if not user:
+        return None
+    user_data = dict(user)
+    last_login = user_data.get("last_login")
+    if last_login:
+        try:
+            user_data["last_login"] = datetime.fromisoformat(last_login)
+        except ValueError:
+            pass
+    return user_data
 
 def login_required(view_func):
     @wraps(view_func)
     def wrapper(*args, **kwargs):
         if g.get("user") is None:
             return redirect(url_for("auth.login"))
+        return view_func(*args, **kwargs)
+    return wrapper
+
+def api_login_required(view_func):
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        if g.get("user") is None:
+            return {"error": "Unauthorized"}, 401
         return view_func(*args, **kwargs)
     return wrapper
 

@@ -1,6 +1,7 @@
 import os
 from flask import Flask, g, render_template
 from auth import auth_bp
+from api import api_bp
 from extensions import csrf, limiter
 from models import close_db, init_db
 from utils import get_user_from_request, set_security_headers
@@ -45,6 +46,7 @@ def create_app():
         return render_template("landing.html")
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
 
     with app.app_context():
         init_db()
