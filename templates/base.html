@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Nimbus Auth{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/app.css') }}"
+    />
+  </head>
+  <body class="min-h-screen bg-mist text-ink">
+    <div
+      class="bg-[radial-gradient(circle_at_top,_#dbeafe,_#f8fafc_55%,_#fefce8)]"
+    >
+      <header
+        class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6"
+      >
+        <a
+          href="{{ url_for('landing') }}"
+          class="text-xl font-semibold tracking-tight"
+          >Nimbus</a
+        >
+        <nav class="flex items-center gap-4 text-sm font-semibold">
+          <a
+            href="{{ url_for('auth.login') }}"
+            class="text-slate-700 hover:text-ink"
+            >Login</a
+          >
+          <a href="{{ url_for('auth.register') }}" class="btn-primary"
+            >Create Account</a
+          >
+        </nav>
+      </header>
+    </div>
+
+    <main class="mx-auto w-full max-w-6xl px-6 pb-16">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="mb-8 space-y-2">
+        {% for category, message in messages %}
+        <div
+          class="rounded-2xl border px-4 py-3 text-sm font-semibold {% if category == 'success' %} border-emerald-200 bg-emerald-50 text-emerald-700 {% elif category == 'error' %} border-rose-200 bg-rose-50 text-rose-700 {% else %} border-slate-200 bg-white text-slate-700 {% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
+
+    <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script
+      defer
+      src="{{ url_for('static', filename='js/password_strength.js') }}"
+    ></script>
+  </body>
+</html>

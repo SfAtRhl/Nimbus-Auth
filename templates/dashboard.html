@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block
+content %}
+<div class="grid gap-6 lg:grid-cols-[260px_1fr]">
+  <aside class="card h-fit">
+    <h3 class="text-lg font-semibold">Workspace</h3>
+    <nav class="mt-4 space-y-2 text-sm font-semibold text-slate-600">
+      <a class="block rounded-2xl bg-slate-100 px-4 py-2 text-ink" href="#"
+        >Overview</a
+      >
+      <a class="block rounded-2xl px-4 py-2 hover:bg-slate-100" href="#"
+        >Profile</a
+      >
+      <a class="block rounded-2xl px-4 py-2 hover:bg-slate-100" href="#"
+        >Security</a
+      >
+      <a class="block rounded-2xl px-4 py-2 hover:bg-slate-100" href="#"
+        >Settings</a
+      >
+      <a
+        class="block rounded-2xl px-4 py-2 text-rose-600 hover:bg-rose-50"
+        href="{{ url_for('auth.logout') }}"
+        >Logout</a
+      >
+    </nav>
+  </aside>
+
+  <section class="space-y-6">
+    <div class="card">
+      <h2 class="text-2xl font-semibold">
+        Welcome back, {{ g.user.full_name }}.
+      </h2>
+      <p class="mt-2 text-sm text-slate-600">
+        Your security posture is strong. Keep protecting your account.
+      </p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="card">
+        <p class="text-sm font-semibold">Last login</p>
+        <p class="mt-2 text-2xl font-semibold">
+          {% if g.user.last_login %} {{ g.user.last_login }} {% else %} First
+          session {% endif %}
+        </p>
+        <p class="text-sm text-slate-500">UTC timestamp.</p>
+      </div>
+      <div class="card">
+        <p class="text-sm font-semibold">Account status</p>
+        <p class="mt-2 text-2xl font-semibold text-emerald-600">Active</p>
+        <p class="text-sm text-slate-500">All systems operational.</p>
+      </div>
+      <div class="card">
+        <p class="text-sm font-semibold">Security score</p>
+        <p class="mt-2 text-2xl font-semibold">A+</p>
+        <p class="text-sm text-slate-500">No alerts in the last 30 days.</p>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
