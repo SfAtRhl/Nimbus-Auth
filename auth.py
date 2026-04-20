@@ -2,6 +2,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_limiter.util import get_remote_address
+from decorators import guest_required
 from extensions import limiter
 from forms import ForgotPasswordForm, LoginForm, RegisterForm, ResetPasswordForm
 from models import (
@@ -13,7 +14,7 @@ from models import (
     set_last_login,
     update_user_password,
 )
-from utils import create_jwt, hash_password, login_required, password_strength, send_reset_email, verify_password
+from utils import create_jwt, hash_password, login_required, password_strength, send_reset_email, send_welcome_email, verify_password
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -22,16 +23,19 @@ def login_limit_key():
     return f"{get_remote_address()}:{email}"
 
 @auth_bp.route("/register", methods=["GET", "POST"])
+@guest_required
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
         password_hash = hash_password(form.password.data)
         create_user(form.full_name.data.strip(), form.email.data.lower(), password_hash)
+        send_welcome_email(form.email.data.lower(), form.full_name.data.strip())
         flash("Account created. Please log in.", "success")
         return redirect(url_for("auth.login"))
     return render_template("register.html", form=form)
 
 @auth_bp.route("/login", methods=["GET", "POST"])
+@guest_required
 @limiter.limit(lambda: current_app.config["RATE_LIMIT"], key_func=login_limit_key)
 def login():
     form = LoginForm()
@@ -58,6 +62,7 @@ def login():
     return render_template("login.html", form=form)
 
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
+@guest_required
 def forgot_password():
     form = ForgotPasswordForm()
     if form.validate_on_submit():

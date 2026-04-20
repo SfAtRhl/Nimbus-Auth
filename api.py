@@ -16,6 +16,7 @@ from utils import (
     create_jwt,
     hash_password,
     send_reset_email,
+    send_welcome_email,
     validate_password_policy,
     verify_password,
 )
@@ -61,6 +62,7 @@ def api_register():
 
     create_user(full_name, email, hash_password(password))
     user = get_user_by_email(email)
+    send_welcome_email(email, full_name)
     token = create_jwt(user, remember=remember)
     return jsonify({"token": token, "user": serialize_user(user)}), 201
 

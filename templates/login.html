@@ -31,7 +31,7 @@ block content %}
           <label class="label">{{ t('label_password') }}</label>
           {{ form.password(id="login-password", class_="input dark:bg-slate-900
           dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-400",
-          placeholder="{{ t('label_password') }}") }} {% for error in
+          placeholder=t('label_password')) }} {% for error in
           form.password.errors %}
           <p class="mt-1 text-xs text-rose-600">{{ error }}</p>
           {% endfor %}

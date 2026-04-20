@@ -40,7 +40,7 @@ endblock %} {% block content %}
           <label class="label">{{ t('label_password') }}</label>
           {{ form.password(id="register-password", class_="input
           dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100
-          dark:placeholder-slate-400", placeholder="{{ t('label_password') }}",
+          dark:placeholder-slate-400", placeholder=t('label_password'),
           data_strength="password", data_meter="#strength-meter",
           data_label="#strength-label", data_weak_label=t('strength_weak'),
           data_medium_label=t('strength_medium'),
@@ -94,7 +94,6 @@ endblock %} {% block content %}
             {{ t('show') }}
           </button>
           <span class="text-xs text-slate-400">{{ t('register_hint') }}</span>
-          >
         </div>
         <button type="submit" class="btn-primary w-full">
           {{ t('register_button') }}

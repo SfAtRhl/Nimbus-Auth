@@ -1,6 +1,7 @@
 import os
+import logging
 from dotenv import load_dotenv
-from flask import Flask, g, render_template, request
+from flask import Flask, current_app, g, render_template, request
 from auth import auth_bp
 from api import api_bp
 from extensions import csrf, limiter
@@ -10,6 +11,7 @@ from translations import DEFAULT_LANG, TRANSLATIONS
 
 def create_app():
     load_dotenv()
+    logging.basicConfig(level=logging.INFO)
     app = Flask(__name__)
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret"),
@@ -60,7 +62,15 @@ def create_app():
     def inject_translations():
         def t(key, **kwargs):
             bundle = TRANSLATIONS.get(getattr(g, "lang", DEFAULT_LANG), TRANSLATIONS[DEFAULT_LANG])
-            text = bundle.get(key, key)
+            text = bundle.get(key)
+            if text is None:
+                text = TRANSLATIONS[DEFAULT_LANG].get(key, key)
+                if text == key:
+                    current_app.logger.warning(
+                        "Missing translation for key: %s (lang=%s)",
+                        key,
+                        getattr(g, "lang", DEFAULT_LANG),
+                    )
             if kwargs:
                 try:
                     return text.format(**kwargs)
@@ -88,6 +98,8 @@ def create_app():
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(api_bp)
+
+    app.logger.setLevel(logging.INFO)
 
     with app.app_context():
         init_db()

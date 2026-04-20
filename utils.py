@@ -170,14 +170,108 @@ def send_reset_email(to_email, reset_url):
         current_app.logger.warning("SMTP_HOST not configured; skipping reset email.")
         return
 
+    current_app.logger.info(
+        "SMTP debug: host=%s port=%s use_tls=%s user_set=%s from=%s",
+        host,
+        port,
+        use_tls,
+        bool(username),
+        current_app.config["SMTP_FROM"],
+    )
+    if int(port) == 465 and use_tls:
+        current_app.logger.warning(
+            "SMTP debug: port 465 typically expects SMTP_SSL; current config uses STARTTLS."
+        )
+
     try:
-        with smtplib.SMTP(host, port, timeout=10) as server:
+        use_ssl = int(port) == 465
+        smtp_class = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP
+        current_app.logger.info("SMTP debug: using %s", "SMTP_SSL" if use_ssl else "SMTP")
+        with smtp_class(host, port, timeout=10) as server:
             server.ehlo()
-            if use_tls:
+            if use_tls and not use_ssl:
+                current_app.logger.info("SMTP debug: starting TLS handshake.")
                 server.starttls()
                 server.ehlo()
             if username:
+                current_app.logger.info("SMTP debug: attempting login for configured user.")
                 server.login(username, password)
             server.send_message(msg)
+            current_app.logger.info("SMTP debug: reset email sent to %s", to_email)
     except (smtplib.SMTPException, OSError) as exc:
-        current_app.logger.error("Failed to send reset email: %s", exc)
+        current_app.logger.exception("Failed to send reset email: %s", exc)
+
+def send_welcome_email(to_email, full_name=""):
+        msg = EmailMessage()
+        msg["Subject"] = "Welcome to Nimbus"
+        msg["From"] = current_app.config["SMTP_FROM"]
+        msg["To"] = to_email
+        name_line = f"Hi {full_name}," if full_name else "Hi there,"
+        text_body = (
+                f"{name_line}\n\n"
+                "Welcome to Nimbus! Your account is ready.\n"
+                "If you did not create this account, please contact support."
+        )
+        html_body = f"""
+        <div style="background-color:#f8fafc;padding:32px;font-family:Arial,Helvetica,sans-serif;">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;margin:0 auto;background-color:#ffffff;border-radius:20px;border:1px solid #e2e8f0;overflow:hidden;">
+                <tr>
+                    <td style="padding:28px 32px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#ffffff;">
+                        <h1 style="margin:0;font-size:20px;letter-spacing:0.08em;text-transform:uppercase;">Nimbus Security</h1>
+                        <p style="margin:8px 0 0;font-size:14px;color:#e2e8f0;">Welcome</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:28px 32px;color:#0f172a;">
+                        <h2 style="margin:0 0 12px;font-size:22px;">Welcome to Nimbus</h2>
+                        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#475569;">
+                            {name_line} Your account is ready. You can now sign in and access your dashboard.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:20px 32px;background-color:#f1f5f9;color:#64748b;font-size:12px;">
+                        If you did not create this account, please contact support.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        """
+        msg.set_content(text_body)
+        msg.add_alternative(html_body, subtype="html")
+        host = current_app.config["SMTP_HOST"]
+        port = current_app.config["SMTP_PORT"]
+        username = current_app.config["SMTP_USERNAME"]
+        password = current_app.config["SMTP_PASSWORD"]
+        use_tls = current_app.config["SMTP_USE_TLS"]
+
+        if not host:
+                current_app.logger.warning("SMTP_HOST not configured; skipping welcome email.")
+                return
+
+        current_app.logger.info(
+                "SMTP debug: host=%s port=%s use_tls=%s user_set=%s from=%s",
+                host,
+                port,
+                use_tls,
+                bool(username),
+                current_app.config["SMTP_FROM"],
+        )
+
+        try:
+                use_ssl = int(port) == 465
+                smtp_class = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP
+                current_app.logger.info("SMTP debug: using %s", "SMTP_SSL" if use_ssl else "SMTP")
+                with smtp_class(host, port, timeout=10) as server:
+                        server.ehlo()
+                        if use_tls and not use_ssl:
+                                current_app.logger.info("SMTP debug: starting TLS handshake.")
+                                server.starttls()
+                                server.ehlo()
+                        if username:
+                                current_app.logger.info("SMTP debug: attempting login for configured user.")
+                                server.login(username, password)
+                        server.send_message(msg)
+                        current_app.logger.info("SMTP debug: welcome email sent to %s", to_email)
+        except (smtplib.SMTPException, OSError) as exc:
+                current_app.logger.exception("Failed to send welcome email: %s", exc)
